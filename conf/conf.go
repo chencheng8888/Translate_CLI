@@ -2,6 +2,8 @@ package conf
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
@@ -25,10 +27,14 @@ func (s *VipperSetting) ReadSection(k string, v interface{}) error {
 }
 func init() {
 	vp := viper.New()
-	vp.AddConfigPath("conf/")
+	exePath, err := os.Executable()
+	if err!=nil {
+		panic("get the path failed")
+	}
+	vp.AddConfigPath(filepath.Join(filepath.Dir(exePath),"conf"))
 	vp.SetConfigName("config")
 	vp.SetConfigType("yaml")
-	err := vp.ReadInConfig()
+	err = vp.ReadInConfig()
 	if err != nil {
 		fmt.Println(err)
 		panic("Read config Err")
